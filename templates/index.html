@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bill Analyzer</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #34495e;
+            margin: 25px 0;
+            font-size: 1.8em;
+        }
+
+        /* Form styling */
+        form {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            width: 100%;
+            margin-bottom: 15px;
+            background: white;
+        }
+
+        button, .button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover, .button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f5f7fa;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        /* Utility classes */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .button-danger {
+            background-color: #e74c3c;
+        }
+
+        .button-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .button-success {
+            background-color: #2ecc71;
+        }
+
+        .button-success:hover {
+            background-color: #27ae60;
+        }
+
+        .message {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            color: #7f8c8d;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bill Analyzer</h1>
+
+        <!-- Excel Upload -->
+        <form action="/upload_excel" method="post" enctype="multipart/form-data">
+            <label>Upload Existing Excel File (optional):</label>
+            <input type="file" name="excel_file" required>
+            <button type="submit">Upload Excel</button>
+        </form>
+
+        <!-- PDF Upload -->
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <label>Upload PDF Bill:</label>
+            <input type="file" name="bill" required>
+            <button type="submit">Add PDF</button>
+        </form>
+
+        <!-- Bill Data Table -->
+        <h2>Current Bills (Excel + Uploaded PDFs)</h2>
+        {% if bill_data %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Total Price</th>
+                        <th>Invoice Number</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bill in bill_data %}
+                    <tr>
+                        <td>{{ bill['Name'] }}</td>
+                        <td>{{ bill['Date'] }}</td>
+                        <td>{{ bill['Total Price'] }}</td>
+                        <td>{{ bill['Invoice Number'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="button-group">
+                <a href="/generate_excel" class="button button-success">Generate Excel</a>
+                <a href="/clear" class="button button-danger">Clear All</a>
+            </div>
+        {% else %}
+            <p class="message">No bills available.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
